@@ -1,5 +1,5 @@
 import os
-wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
+wd= 'C:/Users/iamph/Documents/GitHub/hbv-globalinvcase'#set own working directory
 os.chdir(wd)
 
 import numpy as np
@@ -9,18 +9,21 @@ import pandas as pd
 import hbv_functions as hbv
 
 ## Run this separately
-F=at.ProjectFramework("hbv_v14_gamma_mav.xlsx") #updated to include maternal antivirals
-runs=200 #number of model simulations
+F=at.ProjectFramework("hbv_v14_gamma_vimc.xlsx") #updated to include maternal antivirals
+runs=20 #number of model simulations
 
-afr_bl_runs, afr_bl_cent = hbv.model_results(F, 'regional', "AFR_db_mav.xlsx", "AFR_calib.xlsx", "Status Quo", runs)
-afr_s2_runs, afr_s2_cent = hbv.model_results(F, "AFR_db_s2_mav.xlsx", "AFR_calib.xlsx", "S2: 2040 Target", runs)
-afr_s3_runs, afr_s3_cent = hbv.model_results(F, "AFR_db_s3_mav.xlsx", "AFR_calib.xlsx", "S3: 2050 Target", runs)
+afr_bl_runs, afr_bl_cent = hbv.model_results(F, 'vimc', "vimc_AFR_db_v1_3.xlsx", "vimc_AFR_calib_v1_2.xlsx", "vimc", runs)
 
+## Model results: it runs, but there are couple of errors from the outputs
+## There will be some value taking a look into these errors and disussing these with Chris!
+'''
+## Is there a need for econ analysis for vimc? not at the moment
 afr_econ= hbv.econ_analysis (afr_bl_cent, afr_s1_cent, afr_s2_cent, afr_s3_cent,afr_bl_runs, afr_s1_runs, afr_s2_runs, afr_s3_runs, "AFR", wd, "cost and agg data/costs.xlsx", runs, 0.03, 0.03)
 
 hbv.epi_plots(afr_bl_cent, afr_s1_cent, afr_s2_cent,afr_s3_cent, afr_bl_runs, afr_s1_runs, afr_s2_runs, afr_s3_runs, wd, "cost and agg data/pop_calib.xlsx", "AFR")
 
 hbv.econ_plots (afr_econ, "AFR")
+'''
 
 ### ------ Still to add onto the code
 

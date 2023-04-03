@@ -4,7 +4,6 @@ import hbv_functions as hbv
 import numpy as np
 import pandas as pd
 
-
 def model_results(F, region, data, calib, res_name, runs):
 
     """ Runs the model and simulations, returns central and sampled data sets for analysis
@@ -22,7 +21,6 @@ def model_results(F, region, data, calib, res_name, runs):
     import numpy as np
 
     ## Run the model
-    D=at.ProjectData.from_spreadsheet(f"databooks/{region}/"+data, framework=F)
     P=at.Project(framework=F, databook=f"databooks/{region}/"+data, sim_start=1990, sim_end=2099, sim_dt=0.25, do_run=False)
     cal=P.make_parset()
     cal.load_calibration(f"calibrations/{region}/"+calib)

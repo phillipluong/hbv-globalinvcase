@@ -3,6 +3,10 @@ import functools
 import hbv_functions as hbv
 import numpy as np
 import pandas as pd
+import seaborn as sns
+
+import matplotlib as mpl
+mpl.use('TkAgg')
 
 def model_results(F, region, data, calib, res_name, runs):
 
@@ -31,7 +35,7 @@ def model_results(F, region, data, calib, res_name, runs):
     #Probabilistic sensitivity analysis
     np.random.seed(25012023)
     psa=P.parsets[0]
-    psa_sample=psa.sample()
+    # psa_sample=psa.sample()
     psa_res=P.run_sampled_sims(cal, n_samples=runs)
 
     #Initiate dictionary for required results
@@ -867,7 +871,7 @@ def epi_plots(cbl, cs1, cs2, cs3, bl, s1, s2, s3, wd, calib, reg):
 
     if reg!="global":
     ## Intervention Coverage Plots
-        cov_plot=plt.figure(figsize=(15,15))
+        cov_plot=plt.figure(figsize=(15,15)) # remove
     #Birth Dose Vaccine Coverage (caveat that coverage of mAVs and HBIG in the period 2022-2050 matches coverage of HepB-BD)
         bd=cov_plot.add_subplot(2,2,1)
         bd.plot(np.arange(1990,2099,1).T, cbl["bd_cov"]*1e2, color=colours[0], linestyle="dashed", alpha=0.8)
@@ -915,7 +919,7 @@ def epi_plots(cbl, cs1, cs2, cs3, bl, s1, s2, s3, wd, calib, reg):
         hb3.set_title("Infant (three-dose HepB) Vaccine", fontdict={"fontsize":20, "fontweight":"roman"})
         hb3.set_ylabel("Coverage", fontsize=16)
 
-    #Diagnsosis Coverage
+    #Diagnosis Coverage
         dx=cov_plot.add_subplot(2,2,3)
         dx.plot(np.arange(1990,2099,1).T, cbl["dx_prop"]*1e2, color=colours[0], linestyle="dashed", alpha=0.8)
         #dx.plot(np.arange(1990,2099,1).T, np.percentile(bl["dx_prop"],50, axis=1)*1e2, color=colours[0], linestyle="dashed", alpha=0.8)
@@ -1066,10 +1070,10 @@ def epi_plots(cbl, cs1, cs2, cs3, bl, s1, s2, s3, wd, calib, reg):
     #plt.subplots_adjust(top=0.96, bottom=0.04, left=0.065, right=0.98, hspace=0.35, wspace=0.35)
     plt.tight_layout()
 
-    plt.savefig("epi_plots/"+reg+"_epi plot PSA.png", dpi=500)
+    plt.savefig("epi_plots/"+reg+"_epi plot_PSA.png", dpi=500)
 
     if reg=="global":
-        plt.savefig("epi_plots/"+reg+"_epi plot PSA.pdf", dpi=500)
+        plt.savefig("epi_plots/"+reg+"_epi plot_PSA.pdf", dpi=500)
 
     return print("Figures Generated!")
 

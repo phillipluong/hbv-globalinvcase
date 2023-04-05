@@ -1,5 +1,5 @@
 import os
-wd= 'C:/Users/iamph/Documents/GitHub/hbv-globalinvcase'#set own working directory
+wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
 os.chdir(wd)
 
 import numpy as np

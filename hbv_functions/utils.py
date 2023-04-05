@@ -25,9 +25,9 @@ def model_results(F, region, data, calib, res_name, runs):
     import numpy as np
 
     ## Run the model
-    P=at.Project(framework=F, databook=f"databooks/{region}/"+data, sim_start=1990, sim_end=2099, sim_dt=0.25, do_run=False)
+    P=at.Project(framework=F, databook=f"valuations/{region}/"+data, sim_start=1990, sim_end=2099, sim_dt=0.25, do_run=False)
     cal=P.make_parset()
-    cal.load_calibration(f"calibrations/{region}/"+calib)
+    cal.load_calibration(f"valuations/{region}/"+calib)
 
     # Central Estimate (can be used if needed, but median of ~100 runs converges very well [i.e., no meaningful difference])
     res=P.run_sim(parset=cal, result_name = res_name) # can also expand code here to check calibrations if needed
@@ -969,7 +969,7 @@ def epi_plots(cbl, cs1, cs2, cs3, bl, s1, s2, s3, wd, calib, reg):
 
         #plt.subplots_adjust(top=0.96, bottom=0.08, left=0.055, right=0.959, hspace=0.35, wspace=0.35)
         plt.tight_layout()
-        plt.savefig("cov_plots/"+reg+"_coverage plot_PSA.png", dpi=300)
+        plt.savefig("output_plots/cov_plots/"+reg+"_coverage plot_PSA.png", dpi=300)
 
     ## Epidemiological/Calibration Plots
     psa_plot=plt.figure(figsize=(15,15))
@@ -1070,10 +1070,10 @@ def epi_plots(cbl, cs1, cs2, cs3, bl, s1, s2, s3, wd, calib, reg):
     #plt.subplots_adjust(top=0.96, bottom=0.04, left=0.065, right=0.98, hspace=0.35, wspace=0.35)
     plt.tight_layout()
 
-    plt.savefig("epi_plots/"+reg+"_epi plot_PSA.png", dpi=500)
+    plt.savefig("output_plots/epi_plots/"+reg+"_epi plot_PSA.png", dpi=500)
 
     if reg=="global":
-        plt.savefig("epi_plots/"+reg+"_epi plot_PSA.pdf", dpi=500)
+        plt.savefig("output_plots/epi_plots/"+reg+"_epi plot_PSA.pdf", dpi=500)
 
     return print("Figures Generated!")
 

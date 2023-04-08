@@ -86,7 +86,7 @@ def model_results(F, region, data, calib, res_name, runs):
 
     return store_runs, central_est
 
-#%% Economic Outcome Calculations
+#%% Economic Outcome Calculations -> convert this to analyse a single set of results
 def econ_analysis (cent, cent_s1, cent_s2, cent_s3, res, res_s1, res_s2, res_s3, reg, wd, cost_data, runs, cdisc_rate, hdisc_rate):
 
     #Discounting Array
@@ -850,7 +850,7 @@ def econ_analysis (cent, cent_s1, cent_s2, cent_s3, res, res_s1, res_s2, res_s3,
 
     return econ_dict
 
-#%% Intervention Coverage and Epidemiological Outcomes Plots
+#%% Intervention Coverage and Epidemiological Outcomes Plots -> convert this to plot a single set of results -> have another function to plot together
 def epi_plots(cbl, cs1, cs2, cs3, bl, s1, s2, s3, wd, calib, reg):
 
     from matplotlib import pyplot as plt

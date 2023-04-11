@@ -1,23 +1,19 @@
 import os
 wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
 wd_v = wd + '/applications/vimc'
+wd_data = 'C:/Users/Phil/Google Drive (phillip.luong@burnet.edu.au)/Projects/2022-12 VIMC HepB Modelling/2023-04_Wk1_result_archives/'
 os.chdir(wd)
 
-import numpy as np
 import pandas as pd
-import atomica as at
-
-import hbv_functions as hbv
-import vimc_functions as vimc
+import matplotlib.pyplot as plt
 import vimc_plotting as vplt
 
-fw = 'hbv_v14_gamma_vimc.xlsx'
-db =  wd_v + '/vimc_AFR_db_v1_3.xlsx'
-cl =  wd_v +'/vimc_AFR_calib_v1_2.xlsx'
+in_df = pd.read_csv(wd_data + 'input_results_novax_230130_2.csv')
+cen_df = pd.read_csv(wd_data + 'central_results_novax_230130.csv')
+sto_df = pd.read_csv(wd_data + 'stochastic_results_novax_230130.csv')
 
-in_df, cen_df, sto_df = vimc.get_all_results(fw = fw, db = db, cl = cl)
-
-plt.figure()
+vplt.plot_all(cen_df, sto_df, 10)
+vplt.plot_bounds(cen_df, sto_df, 10, 'cases')
 
 plt.show()
 

@@ -65,3 +65,25 @@ def plot_all(cen_df, sto_df, age):
         plot_output(sto_df, age, i, 'deaths')
         plot_cen_output(cen_df, age, 'deaths')
         plt.title(f'Total Deaths, age {age}')
+
+def plot_bounds(cen_df, sto_df, age, output):
+    '''
+    At the moment, it's strictly the 20th and 80th percentile, but we can change this to cater to what we need
+
+    Inputs:
+    - cen_df:   Central Result Dataframe (DataFrame)
+    - sto_df:   Stochastic Result Dataframe (DataFrame)
+    - age:      Age of result to plot (int)
+    - output:   Output column of result to plot - either 'cohort_size', 'cases', 'dalys', 'deaths' (str)
+    '''
+    lwr = []
+    hgr = []
+    for year in range(2000,2101):
+        lwr.append(sto_df[(sto_df.age == age) & (sto_df.year == year)][output].quantile(0.2))
+        hgr.append(sto_df[(sto_df.age == age) & (sto_df.year == year)][output].quantile(0.8))
+
+    fig, ax = plt.subplots()
+    plt.plot(list(range(2000,2101)), lwr, label = '20 percentile')
+    plt.plot(list(range(2000,2101)), hgr, label = '80 percentile')
+    ax.fill_between(list(range(2000,2101)), lwr, hgr, alpha = 0.3)
+    plt.plot(np.arange(2000,2101), cen_df[(cen_df.age == age)][output],color = 'black',linewidth=1.5)

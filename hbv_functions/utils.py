@@ -4,6 +4,7 @@ import hbv_functions as hbv
 import numpy as np
 import pandas as pd
 import seaborn as sns
+import os
 
 import matplotlib as mpl
 mpl.use('TkAgg')
@@ -18,16 +19,16 @@ def model_results(F, region, data, calib, res_name, runs):
     :param calib:    Project Calibration
     :param res_name: Name of result (str)
     :param runs:     Number of runs in the model
-    :outputs:        store_runs, central_est
+    :returns:        store_runs, central_est
     """
 
     import atomica as at
     import numpy as np
 
     ## Run the model
-    P=at.Project(framework=F, databook=f"valuations/{region}/"+data, sim_start=1990, sim_end=2099, sim_dt=0.25, do_run=False)
+    P=at.Project(framework=F, databook=f"applications/{region}/"+data, sim_start=1990, sim_end=2099, sim_dt=0.25, do_run=False)
     cal=P.make_parset()
-    cal.load_calibration(f"valuations/{region}/"+calib)
+    cal.load_calibration(f"applications/{region}/"+calib)
 
     # Central Estimate (can be used if needed, but median of ~100 runs converges very well [i.e., no meaningful difference])
     res=P.run_sim(parset=cal, result_name = res_name) # can also expand code here to check calibrations if needed
@@ -1176,3 +1177,80 @@ def econ_plots (econ_dict, reg):
 
     return print("Figure Generated!")
 
+def scenario_edit(D, par, cov_dict = defaultdict(lambda: []), t_dict = defaultdict(lambda: []), assump_dict = defaultdict(lambda: None)):
+    '''
+    A single edit of one variable in a databook, driven by dictionaries
+    :param D:             Project Databook to be edited (atomica Databook)
+    :param par:           Specific parameter that will be edited (str)
+    :param cov_dict:      Dictionary of new time series values (dict; keys -> population, values -> list of new input variables)
+    :param t_dict:        Dictionary of new time series year values (dict; keys -> population, values -> list of relative years of input variables)
+    :param assump_dict:   Dictionary of new assumption values (dict; keys -> population, values -> assumption)
+    :return D:			  New Edited databook (databook)
+    '''
+    assert cov_dict.keys() == t_dict.keys(), 'cov and t dict must have the same pops!'
+    tmp = D.tdve[par].ts['0-4M'].units
+    
+    for pop in cov_dict.keys():
+        D.tdve[par].ts[pop] = at.TimeSeries(t_dict[pop], cov_dict[pop], units = tmp)
+        
+    for pop in assump_dict.keys():
+        D.tdve[par].ts[pop] = at.TimeSeries([], [], units = tmp, assumption = assump_dict[pop])
+        
+    return D
+
+def no_vax_scenario(db_loc, fw_loc = "hbv_v14_gamma_mav.xlsx", keep_db = False):
+    '''
+	Introducing the same scenario (from a databook) to simulate a simple no-vaccination scenario
+	:param db_loc: location of the databook to be edited (str)
+	:param fw_loc: location of the atomica framework (str)
+	:param keep_db: whether or not you want to keep the new databook (boolean)
+	:return D: New Edited databook (databook)
+    '''
+    # adjust the two vaccination components to zero (bd, hb3)
+    assump_dict = {}
+
+    for sx in ['M', 'F']:
+        assump_dict[f'0-4{sx}'] = 0
+    
+    F = at.ProjectFramework("hbv_v14_gamma_mav.xlsx")
+    D = at.ProjectData.from_spreadsheet(db_loc, framework = F)
+    D = scenario_edit(D, 'bd', assump_dict = assump_dict)
+    D = scenario_edit(D, 'hb3', assump_dict = assump_dict)
+    D.save('tmp_databook.xlsx')
+    D = at.ProjectData.from_spreadsheet('tmp_databook.xlsx', framework = F) # We need to reload the databook
+    
+    
+    
+    # Remove the temporary databook (you can choose to keep it too by commenting this out)
+    if keep_db == False:
+        os.remove('tmp_databook.xlsx')
+    # save new db and reload it to return it!
+    return D
+    
+def no_treat_scenario(db_loc, fw_loc = "hbv_v14_gamma_mav.xlsx", keep_db = False):
+	'''
+	Introducing the same scenario (from a databook) to simulate a simple no-treatment scenario
+	:param db_loc: location of the databook to be edited (str)
+	:param fw_loc: location of the atomica framework (str)
+	:param keep_db: whether or not you want to keep the new databook (boolean)
+	:return D: New Edited databook (databook)
+    '''
+    # adjust the two vaccination components to zero (bd, hb3)
+    F = at.ProjectFramework("hbv_v14_gamma_mav.xlsx")
+    D = at.ProjectData.from_spreadsheet(db_loc, framework = F)
+    
+    assump_dict = {}
+    
+    for pop in D.pops:
+        assump_dict[pop] = 0
+    
+    D = scenario_edit(D, 't_cov_net', assump_dict = assump_dict)
+    D = scenario_edit(D, 't_cov_hb', assump_dict = assump_dict)
+    D.save('tmp_databook.xlsx')
+    D = at.ProjectData.from_spreadsheet('tmp_databook.xlsx', framework = F)
+    
+    # Remove the temporary databook (you can choose to keep it too by commenting this out)
+    if keep_db == False:
+        os.remove('tmp_databook.xlsx')
+    # save new db and reload it to return it!
+    return D

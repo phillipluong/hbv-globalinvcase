@@ -1,5 +1,5 @@
 import os
-wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
+wd= 'C:/Users/iamph/Documents/GitHub/hbv-globalinvcase'#set own working directory
 wd_v = wd + '/applications/vimc'
 os.chdir(wd)
 

@@ -8,7 +8,7 @@ import pandas as pd
 
 import hbv_functions as hbv
 
-F=at.ProjectFramework("hbv_v14_gamma_mav.xlsx") #updated to include maternal antivirals
+F=at.ProjectFramework("frameworks/hbv_v14_gamma_mav.xlsx") #updated to include maternal antivirals
 runs=30 #number of model simulations
 regions = ['AFR', 'AMR', 'EMR', 'EUR', 'SEAR', 'WPR']
 

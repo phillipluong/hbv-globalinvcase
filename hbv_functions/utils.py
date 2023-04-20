@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import os
+from collections import defaultdict
 
 import matplotlib as mpl
 mpl.use('TkAgg')
@@ -1228,17 +1229,15 @@ def no_vax_scenario(db_loc, fw_loc = "hbv_v14_gamma_mav.xlsx", keep_db = False):
     return D
     
 def no_treat_scenario(db_loc, fw_loc = "hbv_v14_gamma_mav.xlsx", keep_db = False):
-	'''
+    """
 	Introducing the same scenario (from a databook) to simulate a simple no-treatment scenario
 	:param db_loc: location of the databook to be edited (str)
 	:param fw_loc: location of the atomica framework (str)
 	:param keep_db: whether or not you want to keep the new databook (boolean)
 	:return D: New Edited databook (databook)
-    '''
-    # adjust the two vaccination components to zero (bd, hb3)
+    """
     F = at.ProjectFramework("hbv_v14_gamma_mav.xlsx")
     D = at.ProjectData.from_spreadsheet(db_loc, framework = F)
-    
     assump_dict = {}
     
     for pop in D.pops:
@@ -1252,5 +1251,33 @@ def no_treat_scenario(db_loc, fw_loc = "hbv_v14_gamma_mav.xlsx", keep_db = False
     # Remove the temporary databook (you can choose to keep it too by commenting this out)
     if keep_db == False:
         os.remove('tmp_databook.xlsx')
-    # save new db and reload it to return it!
-    return D
+
+    return D # save new db and reload it to return it!
+
+def pop_calib(P,cal, maxtime = 300):
+    '''
+    Assuming acm and alive are still in the framework
+    :param P: atomica Project to be calibrated
+    :param cal: existing atomica Project calibration
+    :param maxtime: the maximum time allowed for the calibration
+    :return cal: updated population calibration
+    '''
+    return P.calibrate(max_time=maxtime, parset=cal, adjustables=["acm"], measurables=["alive"], default_min_scale=0.5, default_max_scale=2)
+
+def epi_calib(P, cal,maxtime = 100, ranges = 4):
+    '''
+    Calibrating general epidemiology of the model (acute, chronic, cirrhosis, and hcc)
+
+    '''
+    for i in range(ranges): #lets iterate a few more times
+        print(f'RUN NUMBER {i+1}, acute and chronic')
+        cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["sag_ix", "ad_pop_sus", "ch_pop_sus", "eag_ix"], measurables=["prev"], default_min_scale=0.1, default_max_scale=5)
+        cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["m_acu"], measurables=["cl_acu"], default_min_scale=0.1, default_max_scale=5)
+        cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["it_icl", "icl_ict"], measurables=["eag_ott"], default_min_scale=0.5, default_max_scale=2)
+
+        print(f'RUN NUMBER {i+1}, cirr and hcc')
+        # Testing this new parameter (lower and upper bounds can be adjusted)
+        cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["cc_dc", "dc_hcc"], measurables=["cl_cir", 'cl_hcc'], default_min_scale=0.5, default_max_scale=2)
+        cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["m_dc"], measurables=["cl_cir"], default_min_scale=0.1, default_max_scale=5)
+        cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["m_hcc"], measurables=["cl_hcc"], default_min_scale=0.1, default_max_scale=5)
+    return cal

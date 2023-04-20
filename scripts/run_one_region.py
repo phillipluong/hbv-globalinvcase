@@ -1,20 +1,19 @@
 import os
-wd= 'C:/Users/iamph/Documents/GitHub/hbv-globalinvcase'#set own working directory
+wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
 os.chdir(wd)
 
-import numpy as np
 import atomica as at
-import pandas as pd
 
 import hbv_functions as hbv
 
+
 ## Run this separately
-F=at.ProjectFramework("hbv_v14_gamma_mav.xlsx") #updated to include maternal antivirals
+F=at.ProjectFramework("frameworks/hbv_v14_gamma_mav.xlsx") #updated to include maternal antivirals
 runs=200 #number of model simulations
-ct = 'SEAR'
+ct = 'EMR'
 
 # bl_runs, bl_cent = hbv.model_results(F, 'regional', f"{ct}_db_mav.xlsx", f"{ct}_calib.xlsx", "Status Quo", runs)
-s1_runs, s1_cent = hbv.model_results(F, 'regional', f"{ct}_db_s1_mav.xlsx", f"{ct}_calib.xlsx", "S1: 2040 Target", runs)
+s1_runs, s1_cent = hbv.model_results(F, f'region_{ct.lower()}', f"{ct}_db_s1_mav.xlsx", f"{ct}_calib.xlsx", "S1: 2040 Target", runs)
 # s2_runs, s2_cent = hbv.model_results(F, 'regional', f"{ct}_db_s2_mav.xlsx", f"{ct}_calib.xlsx", "S2: 2040 Target", runs)
 # s3_runs, s3_cent = hbv.model_results(F, 'regional', f"{ct}_db_s3_mav.xlsx", f"{ct}_calib.xlsx", "S3: 2050 Target", runs)
 

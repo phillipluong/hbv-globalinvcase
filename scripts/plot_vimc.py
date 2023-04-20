@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import hbv_functions as hbv
 
 loc = f"valuations/vimc/"
-fw = 'hbv_v14_gamma_vimc.xlsx'
+fw = 'frameworks/hbv_v14_gamma_vimc.xlsx'
 db = loc+'vimc_AFR_db_v1_3.xlsx'
 cl = loc+'vimc_AFR_calib_v1_2.xlsx'
 P = at.Project(framework=fw, databook=db, sim_start=1990, sim_end=2101, sim_dt=0.25, do_run=False)

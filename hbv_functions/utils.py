@@ -6,6 +6,7 @@ import pandas as pd
 import seaborn as sns
 import os
 from collections import defaultdict
+from sklearn.metrics import mean_absolute_error, mean_squared_error, mean_absolute_percentage_error
 
 import matplotlib as mpl
 mpl.use('TkAgg')
@@ -1281,3 +1282,73 @@ def epi_calib(P, cal,maxtime = 100, ranges = 4):
         cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["m_dc"], measurables=["cl_cir"], default_min_scale=0.1, default_max_scale=5)
         cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["m_hcc"], measurables=["cl_hcc"], default_min_scale=0.1, default_max_scale=5)
     return cal
+
+def highlight_results(s, lb, ub, props=""):
+    return np.where((lb <= s) & (s < ub), props, "")
+
+def determine_cal_quality(df):
+    """
+    Created by: Phillip Luong
+    Last Updated: 26/04/2023
+    Taken from cat-typhoid
+    Needs highlight_results, helps determine how good the calibrations are after generate_output_df
+    """
+
+    df = df.style.apply(highlight_results, lb=1, ub=1000, props="color:white;background-color:black",  axis=0).apply(highlight_results, lb=0.6, ub=1, props="color:white;background-color:red",axis=0).apply(highlight_results, lb=0.4, ub=0.6, props="color:black;background-color:gold",  axis=0).apply(highlight_results, lb=0, ub=0.4, props="color:black;background-color:mediumseagreen",  axis=0)
+    return df
+
+def metric(data, est, mt):
+    """
+    LAST EDIT: 10/08/21
+    by: Phillip Luong
+
+    :param data: An array or list of data points to calibrate to
+    :param est: An array or list of the estimated points
+    :param mt: 'mae', 'mse', 'rmse', 'mape'
+    :return: Numercal value for the error
+    """
+    if mt == "mae":
+        return mean_absolute_error(data, est, sample_weight=data)
+    if mt == "mse":
+        return mean_squared_error(data, est, sample_weight=data)
+    if mt == "rmse":
+        return mean_squared_error(data, est, sample_weight=data, squared=False)
+    if mt == "mape":
+        return mean_absolute_percentage_error(data, est, sample_weight=data)
+
+def error_table(regions, fw_loc = 'frameworks/hbv_v14_gamma_mav.xlsx'):
+	'''
+	THIS ONLY WORKS WITH WHO REGIONS RIGHT NOW
+	TODO: comment on how parts of the funtion work
+	'''
+	edf = pd.DataFrame()
+	years = [2010, 2015, 2019]
+	pars = ['chb_pop', 'cl_acu', 'cl_cir', 'cl_hcc']
+	F = at.ProjectFramework(fw_loc)
+	for ct in regions:
+	    print(f"Current region: {ct}")
+
+	    D = at.ProjectData.from_spreadsheet(f"applications/region_{ct.lower()}/{ct}_db_mav.xlsx", framework=F)
+	    P= at.Project(framework=F, databook=D, sim_dt=0.25, sim_start=1990, sim_end=2099, do_run=False)
+	    cal = P.make_parset()
+	    cal.load_calibration(f"applications/region_{ct.lower()}/{ct}_calib.xlsx")
+	    res = P.run_sim(parset=cal)
+
+	    for par in pars:
+	        data = []
+	        est = []
+
+	        if par == 'chb_pop':
+	            tmp_yr = years[1:]
+	        else:
+	            tmp_yr = years
+
+	        for yr in tmp_yr:
+	            tmp = [P.data.tdve[par].ts[x].interpolate(2000 + yr) for x in range(10)]  # data
+	            data = [i[0] for i in tmp]
+	            est = [x.vals[(yr-2000) * 4] for x in res.get_variable(par)]  # estimate
+
+	            edf.loc[f"{ct}", par] = metric(data, est, "mape")
+	    
+	edf = edf.apply(pd.to_numeric).round(4)
+	return edf

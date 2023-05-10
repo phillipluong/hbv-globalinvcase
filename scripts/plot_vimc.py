@@ -1,6 +1,6 @@
 import os
-wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
-os.chdir(wd)
+# wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
+# os.chdir(wd)
 
 import numpy as np
 import atomica as at
@@ -8,8 +8,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 import hbv_functions as hbv
+hbv.get_gitlab_folder()
 
-loc = f"valuations/vimc/"
+loc = f"applications/vimc_example/"
 fw = 'frameworks/hbv_v14_gamma_vimc.xlsx'
 db = loc+'vimc_AFR_db_v1_3.xlsx'
 cl = loc+'vimc_AFR_calib_v1_2.xlsx'
@@ -27,7 +28,7 @@ at.plot_series(d, data=P.data, axis="pops")
 d=at.PlotData([res], outputs=["dalys"])
 at.plot_series(d, data=P.data, axis="pops")
 
-d=at.PlotData([res], outputs=["deaths"]) # Deaths is cl_acu, cl_cir, cl_hcc
+d=at.PlotData([res], outputs=["cl_acu"]) # Deaths is cl_acu, cl_cir, cl_hcc
 at.plot_series(d, data=P.data, axis="pops")
 
 plt.show()

@@ -1274,11 +1274,11 @@ def epi_calib(P, cal,maxtime = 100, ranges = 4):
         print(f'RUN NUMBER {i+1}, acute and chronic')
         cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["sag_ix", "ad_pop_sus", "ch_pop_sus", "eag_ix"], measurables=["prev"], default_min_scale=0.1, default_max_scale=5)
         cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["m_acu"], measurables=["cl_acu"], default_min_scale=0.1, default_max_scale=5)
-        cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["it_icl", "icl_ict"], measurables=["eag_ott"], default_min_scale=0.5, default_max_scale=2)
+        cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["it_icl", "icl_ict"], measurables=["eag_ott"], default_min_scale=0.1, default_max_scale=3)
 
         print(f'RUN NUMBER {i+1}, cirr and hcc')
         # Testing this new parameter (lower and upper bounds can be adjusted)
-        cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["cc_dc", "dc_hcc"], measurables=["cl_cir", 'cl_hcc'], default_min_scale=0.5, default_max_scale=2)
+        cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["cc_dc", "dc_hcc"], measurables=["cl_cir", 'cl_hcc'], default_min_scale=0.1, default_max_scale=3)
         cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["m_dc"], measurables=["cl_cir"], default_min_scale=0.1, default_max_scale=5)
         cal = P.calibrate(max_time=maxtime, parset=cal, adjustables=["m_hcc"], measurables=["cl_hcc"], default_min_scale=0.1, default_max_scale=5)
     return cal

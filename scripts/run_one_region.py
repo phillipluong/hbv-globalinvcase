@@ -1,15 +1,15 @@
 import os
-wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
-os.chdir(wd)
+# wd= 'C:/Users/iamph/Documents/GitHub/hbv-globalinvcase'#set own working directory
+# os.chdir(wd)
 
 import atomica as at
 
 import hbv_functions as hbv
-
+hbv.get_gitlab_folder()
 
 ## Run this separately
 F=at.ProjectFramework("frameworks/hbv_v14_gamma_mav.xlsx") #updated to include maternal antivirals
-runs=200 #number of model simulations
+runs=2 #number of model simulations
 ct = 'EMR'
 
 # bl_runs, bl_cent = hbv.model_results(F, 'regional', f"{ct}_db_mav.xlsx", f"{ct}_calib.xlsx", "Status Quo", runs)

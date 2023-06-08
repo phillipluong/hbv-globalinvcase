@@ -1,12 +1,13 @@
 import os
-wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
-os.chdir(wd)
+# wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
+# os.chdir(wd)
 
 import numpy as np
 import atomica as at
 import pandas as pd
 
 import hbv_functions as hbv
+hbv.get_gitlab_folder()
 
 F=at.ProjectFramework("frameworks/hbv_v14_gamma_mav.xlsx") #updated to include maternal antivirals
 runs=30 #number of model simulations

@@ -8,7 +8,7 @@ def get_gitlab_folder():
 
     if user in ['DESKTOP-F590A3S']: # Phil Luong Desktop
         folder = 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase/'
-    elif user in ['PhilL-Laptop-May23']:
+    elif user in ["DESKTOP-97OFORU"]: # Phil Luong Laptop
         folder = 'C:/Users/iamph/Documents/GitHub/hbv-globalinvcase/'
     else:
         raise Exception(f'Error: unknown user "{user}", please add user information for future convenience!')

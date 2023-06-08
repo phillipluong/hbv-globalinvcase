@@ -1,10 +1,11 @@
 import os
-wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
-os.chdir(wd)
+# wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
+# os.chdir(wd)
 
 import atomica as at
 import matplotlib.pyplot as plt
 import hbv_functions as hbv
+hbv.get_gitlab_folder()
 
 region = 'EUR'
 F = at.ProjectFramework('frameworks/hbv_v14_gamma_mav.xlsx')

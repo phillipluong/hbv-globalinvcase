@@ -6,7 +6,7 @@ def get_gitlab_folder():
     import sys
     user = socket.gethostname()
 
-    if user in ['DESKTOP-F590A3S']: # Phil Luong Desktop
+    if user in ["PhilL-Desktop-May23"]: # Phil Luong Desktop
         folder = 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase/'
     elif user in ["DESKTOP-97OFORU"]: # Phil Luong Laptop
         folder = 'C:/Users/iamph/Documents/GitHub/hbv-globalinvcase/'

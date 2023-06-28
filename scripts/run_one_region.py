@@ -1,6 +1,7 @@
 import os
-# wd= 'C:/Users/iamph/Documents/GitHub/hbv-globalinvcase'#set own working directory
-# os.chdir(wd)
+wd= 'C:/Users/Phil/Documents/GitHub/hbv-globalinvcase'#set own working directory
+import sys
+sys.path.append(wd)
 
 import atomica as at
 

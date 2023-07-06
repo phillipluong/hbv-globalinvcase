@@ -174,7 +174,7 @@ def central_results(fw = 'hbv_v14_gamma_2.xlsx', db = "AFR_db_v1_2_1.xlsx", cl =
     loc2 = 'applications/vimc/Data/Demographics/' # The location for the input data may be different (depending on where you store it)
 
     ## Load and process the input data
-    df1 = pd.read_csv(loc2+'202212rfp-1_dds-202208_int_pop_both.csv')
+    df1 = pd.read_csv(loc2+'202212rfp-1_dds-202208_int_pop_both.csv') # This will likely change by country
 
     df1 = df1[(df1.year >= 1990) & (df1.year <=2100)]
     age_groups = ['0-4', '5-14', '15-49', '50-69', '70+']
@@ -205,7 +205,7 @@ def central_results(fw = 'hbv_v14_gamma_2.xlsx', db = "AFR_db_v1_2_1.xlsx", cl =
                 res_val = tot_val[(year-1990)*4] # The '4' should be timestep (if future runs are different)
 
                 idx = cen_df[(cen_df.year == year) & (cen_df.age == age)].index[0] #Index of age group year sim entry
-                cen_df.loc[idx, opt] = ratio * res_val
+                cen_df.loc[idx, opt] = ratio * res_val # (population weighting * the value of the result we're looking at)
 
         tot_val = res.get_variable(output_dict[opt])[2].vals + res.get_variable(output_dict[opt])[3].vals
         for age in range(5,15):
